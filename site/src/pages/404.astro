@@ -1,0 +1,6 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Text from '../components/Text.astro';
+import { url } from '../lib/notes';
+---
+<Layout title="Page not found"><main id="main" class="not-found"><p class="eyebrow">404 · <Text en="A little off course" zh="稍稍偏离了航线" /></p><h1><Text en="Let’s find the surface." zh="一起回到水面吧。" /></h1><p><Text en="This page may have moved with the current. Your notes are still here." zh="这一页可能已经随水流移动，学习笔记依然在这里。" /></p><a class="button-primary" href={url()}><Text en="Back to the notebook" zh="返回学习笔记" /> ↗</a></main></Layout>

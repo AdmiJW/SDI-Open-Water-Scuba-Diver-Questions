@@ -1,0 +1,16 @@
+---
+import Text from './Text.astro';
+---
+<dialog id="search-dialog" class="search-dialog" aria-labelledby="search-heading">
+  <div class="search-heading">
+    <h2 id="search-heading"><Text en="Explore the notes" zh="搜索学习笔记" /></h2>
+    <button type="button" class="icon-button" data-close-search aria-label="Close search" data-aria-en="Close search" data-aria-zh="关闭搜索">×</button>
+  </div>
+  <form id="search-form" role="search">
+    <label for="search-input" class="sr-only"><Text en="Search all chapters" zh="搜索所有章节" /></label>
+    <div class="search-field"><span aria-hidden="true">⌕</span><input id="search-input" type="search" autocomplete="off" placeholder="A question, a concept, a little curiosity…" data-placeholder-en="A question, a concept, a little curiosity…" data-placeholder-zh="搜索问题、概念，或你想了解的内容…" /><kbd>ESC</kbd></div>
+  </form>
+  <p id="search-status" class="search-status" role="status" aria-live="polite"></p>
+  <ol id="search-results" class="search-results"></ol>
+  <div class="search-foot"><Text en="Search in English or Chinese. Follow your curiosity." zh="支持中文和英文搜索。带着好奇心，继续探索。" /></div>
+</dialog>

@@ -1,0 +1,42 @@
+---
+import { render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Text from '../../components/Text.astro';
+import NoteTitle from '../../components/NoteTitle.astro';
+import { getNotes, url } from '../../lib/notes';
+
+export async function getStaticPaths() {
+  const notes = await getNotes();
+  return notes.map((note, index) => ({ params: { id: note.id }, props: { note, notes, previous: notes[index - 1], next: notes[index + 1] } }));
+}
+
+const { note, notes, previous, next } = Astro.props;
+const { Content, headings } = await render(note.entry);
+const questionHeadings = headings.filter((heading) => /^问题\s+\d+/.test(heading.text));
+const outline = questionHeadings.length ? questionHeadings : headings.filter((heading) => heading.depth === 2);
+---
+<Layout title={note.title}>
+  <div class="reading-shell">
+    <aside class="chapter-sidebar" aria-label="Chapter navigation" data-aria-en="Chapter navigation" data-aria-zh="章节导航">
+      <a class="back-link" href={url('#chapters')}>← <Text en="All chapters" zh="所有章节" /></a>
+      <p class="eyebrow"><Text en="The study notebook" zh="学习笔记" /></p>
+      <nav>{notes.map((item) => <a href={url(`notes/${item.id}/`)} class:list={['sidebar-link', { active: item.id === note.id }]} aria-current={item.id === note.id ? 'page' : undefined}><span class="nav-number">{item.chapter !== null ? String(item.chapter).padStart(2, '0') : '↳'}</span><NoteTitle title={item.title} chapter={item.chapter} /><span class="nav-dot" aria-hidden="true"></span></a>)}</nav>
+      <p class="sidebar-motto"><Text en="A little understanding goes a long way underwater." zh="多懂一点，水下更从容。" /></p>
+    </aside>
+    <main id="main" class="reading-main">
+      <details class="mobile-chapters"><summary><Text en="Browse chapters" zh="浏览章节" /></summary><nav>{notes.map((item) => <a href={url(`notes/${item.id}/`)} aria-current={item.id === note.id ? 'page' : undefined}><NoteTitle title={item.title} chapter={item.chapter} /></a>)}</nav></details>
+      <header class="note-header">
+        <p class="eyebrow"><Text en="SDI Open Water · Study notes" zh="SDI 开放水域潜水 · 学习笔记" /></p>
+        <h1 data-pagefind-meta={`title:${note.title}`}><NoteTitle title={note.title} chapter={note.chapter} /></h1>
+        <div class="note-meta"><span>{note.questionCount} <Text en="questions" zh="道问题" /></span><span aria-hidden="true">·</span><span><Text en="Chinese & English" zh="中文与英文" /></span><a href={`https://github.com/AdmiJW/SDI-Open-Water-Scuba-Diver-Questions/blob/master/${encodeURIComponent(note.filename)}`}><Text en="View source ↗" zh="查看原文 ↗" /></a></div>
+      </header>
+      {outline.length > 0 && <details class="mobile-outline"><summary><Text en="On this page" zh="本页目录" /></summary><nav>{outline.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}</nav></details>}
+      <article class="prose" lang="zh-CN" data-pagefind-body><Content /></article>
+      <nav class="page-pagination" aria-label="Previous and next notes" data-aria-en="Previous and next notes" data-aria-zh="上一页与下一页">
+        {previous ? <a href={url(`notes/${previous.id}/`)}><small>← <Text en="Previous chapter" zh="上一章" /></small><strong><NoteTitle title={previous.title} chapter={previous.chapter} /></strong></a> : <span />}
+        {next && <a class="next-page" href={url(`notes/${next.id}/`)}><small><Text en="Next chapter" zh="下一章" /> →</small><strong><NoteTitle title={next.title} chapter={next.chapter} /></strong></a>}
+      </nav>
+    </main>
+    <aside class="page-outline"><p class="eyebrow"><Text en="On this page" zh="本页目录" /></p><nav>{outline.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}</nav><a class="back-top" href="#main">↑ <Text en="Back to the surface" zh="返回顶部" /></a></aside>
+  </div>
+</Layout>

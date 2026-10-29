@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Text from '../components/Text.astro';
+import NoteTitle from '../components/NoteTitle.astro';
+import Ocean from '../components/Ocean.astro';
+import { getNotes, url } from '../lib/notes';
+const notes = await getNotes();
+const questionCount = notes.reduce((sum, note) => sum + note.questionCount, 0);
+const chapterCount = notes.filter((note) => note.chapter !== null).length;
+---
+<Layout>
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span><Text en="A little deeper, a little wiser" zh="潜得更深一点，懂得更多一点" /></p>
+        <h1><span class="lang-en" lang="en">There’s a whole<br />world <em>below.</em></span><span class="lang-zh" lang="zh-CN">水面之下，<br /><em>另有天地。</em></span></h1>
+        <p class="hero-description"><Text en="A quiet place to make sense of the underwater world. Bilingual questions, thoughtful explanations, and the foundations of open water diving." zh="在这片宁静的角落，慢慢理解水下世界。通过双语问题与细致解析，学习开放水域潜水的基础知识。" /></p>
+        <div class="hero-buttons"><a class="button-primary" href={notes[0] ? url(`notes/${notes[0].id}/`) : '#chapters'}><Text en="Dive into the notes" zh="开始探索笔记" /><span aria-hidden="true">↘</span></a><a class="button-text" href="#chapters"><Text en="Find a chapter" zh="查看章节目录" /><span aria-hidden="true">↓</span></a></div>
+        <div class="hero-facts"><div><strong>{chapterCount.toString().padStart(2, '0')}</strong><span><Text en="chapters to explore" zh="个学习章节" /></span></div><div><strong>{questionCount}</strong><span><Text en="questions to understand" zh="道问题与解析" /></span></div><div><strong>中文 / EN</strong><span><Text en="two ways to learn" zh="双语学习内容" /></span></div></div>
+      </div>
+      <Ocean />
+      <div class="hero-bottom"><span>SDI OPEN WATER STUDY NOTES</span><span><Text en="Take your time. There’s no rush down here." zh="慢慢来，水下不必匆忙。" /></span></div>
+    </section>
+    <section class="chapter-section" id="chapters" aria-labelledby="chapter-heading">
+      <div class="section-heading"><div><p class="eyebrow"><Text en="Your next descent" zh="下一次探索，从这里开始" /></p><h2 id="chapter-heading"><Text en="One chapter at a time." zh="一章一章，慢慢学懂。" /></h2></div><p><Text en="Follow the chapters in order, or find the question on your mind." zh="按顺序阅读，或找到你正在思考的问题。" /></p></div>
+      <div class="chapter-grid">
+        {notes.map((note) => <a class="chapter-card" href={url(`notes/${note.id}/`)}>
+          <div class="card-top"><span class="card-number">{note.chapter !== null ? String(note.chapter).padStart(2, '0') : '↳'}</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+          <h3><NoteTitle title={note.title} chapter={note.chapter} /></h3>
+          <p>{note.firstQuestion !== null ? <Text en={`Questions ${note.firstQuestion}–${note.lastQuestion}`} zh={`问题 ${note.firstQuestion}–${note.lastQuestion}`} /> : <Text en="Study notes" zh="学习笔记" />}</p>
+          <div class="card-foot"><span>{note.questionCount} <Text en="questions" zh="道问题" /></span><span><Text en="Read chapter" zh="阅读章节" /> <span aria-hidden="true">→</span></span></div>
+        </a>)}
+      </div>
+      {notes.length === 0 && <p><Text en="The next chapter is still being written. Check back soon." zh="新的篇章正在准备中，欢迎稍后再来。" /></p>}
+    </section>
+    <aside class="surface-note"><span class="surface-icon" aria-hidden="true">≈</span><div><p class="eyebrow"><Text en="A note from the surface" zh="来自水面的一点提醒" /></p><p><Text en="These are personal learning notes, made to revisit and share. Bring your curiosity, take a breath, and let each idea sink in." zh="这些个人学习笔记，记录着值得回顾与分享的知识。带着好奇心，放慢呼吸，让每个概念慢慢沉淀。" /></p></div><span aria-hidden="true">↘</span></aside>
+  </main>
+</Layout>

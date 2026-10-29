@@ -1,0 +1,6 @@
+---
+import Text from './Text.astro';
+interface Props { title: string; chapter: number | null; }
+const { title, chapter } = Astro.props;
+---
+{chapter !== null ? <Text en={`Chapter ${chapter}`} zh={`第 ${chapter} 章`} /> : title}

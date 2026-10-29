@@ -1,0 +1,10 @@
+site/node_modules/
+site/dist/
+site/.astro/
+site/.cache/
+site/.env
+site/.env.*
+!site/.env.example
+site/*.log
+site/.qa/
+.DS_Store

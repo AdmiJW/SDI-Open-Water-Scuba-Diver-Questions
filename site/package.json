@@ -1,0 +1,33 @@
+{
+  "name": "sdi-open-water-study-notes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro build && pagefind --site dist --force-language zh",
+    "preview": "astro preview",
+    "test": "node --test scripts/content.test.mjs",
+    "verify": "node scripts/verify-build.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "7.3.5",
+    "astro": "7.4.4",
+    "github-slugger": "2.0.0",
+    "katex": "0.19.1",
+    "rehype-katex": "7.0.1",
+    "remark-math": "6.0.0",
+    "unist-util-visit": "5.2.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@types/node": "24.19.2",
+    "pagefind": "1.5.2",
+    "typescript": "5.9.3"
+  },
+  "overrides": { "katex": "$katex" }
+}
